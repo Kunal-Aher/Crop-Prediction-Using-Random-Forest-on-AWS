@@ -41,9 +41,7 @@ Each sample in the dataset is labeled with the **most suitable crop** based on t
 - **Machine Learning:** scikit-learn (RandomForestClassifier).  
 - **Backend:** Flask (REST API for crop predictions).  
 - **Frontend:** HTML, CSS, JavaScript (Bootstrap).  
-- **Database:** AWS RDS (PostgreSQL/MySQL for storing predictions).  
-- **Storage:** AWS S3 (for model storage).  
-- **Deployment:** AWS EC2, AWS Lambda, API Gateway.  
+- **Deployment:** AWS EC2, API Gateway.  
 
 ---
 
@@ -53,12 +51,12 @@ Each sample in the dataset is labeled with the **most suitable crop** based on t
 
 ### **Step 1: Create & Configure an EC2 Instance**  
 - Launch an **Ubuntu 22.04** EC2 instance.  
-- Set up **security groups** to allow inbound traffic on **port 5000** for the Flask API and **port 22** for SSH access.  
+- Set up **security groups** to allow inbound traffic on **port 8080** for the Flask API and **port 22** for SSH access.  
 - Connect to the instance using SSH.  
 
 ### **Step 2: Install Required Software**  
 - Update system packages.  
-- Install **Python, pip, Flask, scikit-learn, joblib, and boto3**.  
+- Install **Python, pip, Flask, scikit-learn, pickle **.  
 
 ### **Step 3: Transfer Model & Application to EC2**  
 - Upload the trained model file (`crop_prediction_model.pkl`) and Flask application files to EC2.  
@@ -67,56 +65,136 @@ Each sample in the dataset is labeled with the **most suitable crop** based on t
 - Run the Flask application to serve crop predictions.  
 - Configure the instance to **run the API on startup** for continuous availability.  
 
----
-
-## **2️⃣ Set Up API with AWS Lambda & API Gateway**  
-
-### **Step 1: Upload Model to AWS S3**  
-- Create an **S3 bucket** and upload the trained **crop prediction model** (`crop_prediction_model.pkl`).  
-
-### **Step 2: Create an AWS Lambda Function**  
-- Configure a new **Lambda function** to load the model from S3 and process user input.  
-- Set appropriate **memory, execution timeout, and permissions**.  
-- Install required Python packages inside the Lambda environment.  
-
-### **Step 3: Deploy API Gateway**  
-- Create a **REST API** using AWS API Gateway.  
-- Define a **POST method** linked to the Lambda function.  
-- Enable **CORS** for cross-origin requests.  
-- Deploy the API and generate a **public endpoint URL**.  
-
-### **Step 4: Test API Endpoint**  
-- Use **Postman or cURL** to send a POST request with soil parameters.  
-- Verify that the API returns the correct predicted crop.  
+Here’s a step-by-step guide to **deploy your Crop Prediction System using EC2** instead of S3:
 
 ---
 
-## **3️⃣ Database Integration with AWS RDS**  
+# 🚀 **AWS EC2 Deployment Guide for Crop Prediction System**
 
-### **Step 1: Set Up AWS RDS**  
-- Choose **PostgreSQL or MySQL** as the database.  
-- Configure **security groups** to allow connections from the EC2 instance.  
-
-### **Step 2: Store & Retrieve Predictions**  
-- Store user inputs and predicted crops in an RDS table.  
-- Implement a **logging mechanism** for future analysis.  
+This guide walks you through **creating an EC2 instance, configuring it, and deploying your Flask-based ML model**.
 
 ---
 
-# 🎯 **Future Enhancements**  
+## 🏗 **Step 1: Create an EC2 Instance**
 
-- **Weather API Integration:** Fetch real-time weather data to improve accuracy.  
-- **Mobile App Integration:** Provide farmers with an easy-to-use mobile interface.  
-- **Deep Learning Models:** Explore CNNs or LSTMs for enhanced predictions.  
-- **AutoML Optimization:** Use AutoML for hyperparameter tuning.  
-- **Voice Assistant Feature:** Enable voice-based crop recommendations.  
+1. **Log in to AWS Console** → Go to **EC2 Dashboard**.
+2. **Launch a New Instance**:
+   - Select **Ubuntu 22.04 LTS** (recommended).
+   - Choose an instance type (**t2.micro** for free tier or a higher spec if needed).
+3. **Configure Security Group**:
+   - **SSH (port 22)** → Allow from your IP (or anywhere if needed).
+   - **HTTP (port 80)** → Allow from anywhere (for public access).
+   - **Custom TCP (port 5000 or 8080)** → Allow from anywhere (for Flask API).
+4. **Key Pair**:
+   - Create/download a **key pair (.pem file)** for SSH access.
+5. **Launch Instance**.
 
 ---
 
-# 📝 **Contributors**  
-
-👨‍💻 **Kunal Aher Agriculture Tech**  
+## 🔗 **Step 2: Connect to EC2 via SSH**
+1. Open **terminal** (Linux/Mac) or **Putty** (Windows).
+2. Run:
+   ```bash
+   ssh -i your-key.pem ubuntu@your-ec2-public-ip
+   ```
+3. If using **Windows**, use **Putty** (convert `.pem` to `.ppk` via PuttyGen).
 
 ---
 
-This **detailed README** provides a **step-by-step AWS deployment guide** for your **Crop Prediction System**. Let me know if you need additional details! 🚀
+## ⚙️ **Step 3: Install Dependencies on EC2**
+Run these commands after SSH-ing into EC2:
+
+```bash
+# Update system packages
+sudo apt update && sudo apt upgrade -y
+
+# Install Python and required packages
+sudo apt install python3 python3-pip -y
+
+# Install Flask and ML dependencies
+pip3 install flask scikit-learn pandas joblib
+```
+
+---
+
+## 📤 **Step 4: Transfer Model & Code to EC2**
+Use **WinSCP (Windows)** or **scp (Linux/Mac)**:
+
+```bash
+scp -i your-key.pem -r /local-path-to-project ubuntu@your-ec2-public-ip:/home/ubuntu/
+```
+
+If using **WinSCP**:
+1. Open WinSCP → Enter **EC2 Public IP, username (`ubuntu`)**, and select your **key**.
+2. Transfer files (`app.py`, `model.pkl`, etc.).
+
+---
+
+## 🚀 **Step 5: Run Flask API on EC2**
+1. **Navigate to your project directory**:
+   ```bash
+   cd /home/ubuntu/project-folder
+   ```
+2. **Run Flask API**:
+   ```bash
+   python3 app.py
+   ```
+3. If running on **port 5000**, access it at:
+   ```
+   http://your-ec2-public-ip:5000/
+   ```
+4. If the app should always run:
+   ```bash
+   nohup python3 app.py &
+   ```
+
+---
+
+## 🌍 **Step 6: Make Flask API Publicly Accessible**
+1. Edit `app.py` to:
+   ```python
+   app.run(host="0.0.0.0", port=5000)
+   ```
+2. Restart Flask:
+   ```bash
+   python3 app.py
+   ```
+
+---
+
+## 🔄 **Step 7: Set Up Auto-Start on Boot (Optional)**
+1. Open **crontab**:
+   ```bash
+   crontab -e
+   ```
+2. Add:
+   ```
+   @reboot cd /home/ubuntu/project-folder && nohup python3 app.py &
+   ```
+
+---
+
+## ✅ **Step 8: Test API**
+Send a **POST request**:
+```bash
+curl -X POST http://your-ec2-public-ip:5000/predict -H "Content-Type: application/json" -d '{"N":30, "P":60, "K":40, "temperature":25, "humidity":80, "ph":6.5, "rainfall":200}'
+```
+
+---
+
+## 🔧 **Troubleshooting**
+- **Port not accessible?** → Check **security group** settings.
+- **App crashes?** → Check logs:
+  ```bash
+  tail -f nohup.out
+  ```
+- **Need HTTPS?** → Use **NGINX + SSL**.
+
+---
+
+# 🎯 **Conclusion**
+This guide covers **full deployment on EC2 without S3**. Let me know if you need refinements! 🚀
+
+---
+
+
