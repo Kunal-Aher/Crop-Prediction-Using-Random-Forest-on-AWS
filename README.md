@@ -1,6 +1,3 @@
-Here's a **detailed** README without code but with step-by-step instructions for your **Crop Prediction Using RandomForest on AWS** project.  
-
----
 
 # 🌾 **Crop Prediction Using RandomForest on AWS**  
 
