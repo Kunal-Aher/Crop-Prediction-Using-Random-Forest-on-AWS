@@ -191,6 +191,11 @@ curl -X POST http://your-ec2-public-ip:5000/predict -H "Content-Type: applicatio
 - **Need HTTPS?** → Use **NGINX + SSL**.
 
 ---
+# 📝 **Contributors**  
+
+👨‍💻 **Kunal Aher Agriculture Tech**  
+
+---
 
 # 🎯 **Conclusion**
 This guide covers **full deployment on EC2 without S3**. Let me know if you need refinements! 🚀
