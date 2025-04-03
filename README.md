@@ -193,7 +193,7 @@ curl -X POST http://your-ec2-public-ip:5000/predict -H "Content-Type: applicatio
 ---
 # 📝 **Contributors**  
 
-👨‍💻 **Kunal Aher Agriculture Tech**  
+👨‍💻 **Kunal Aher**  
 
 ---
 
