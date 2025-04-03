@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Prediction Engine</title>
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lobster&display=swap' rel='stylesheet' type='text/css'>
+    <!-- Link to your CSS file using Flask's url_for -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="static\style2.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Crop Prediction System</h1>
+            <p class="subtitle">Enter the soil and environmental conditions to get a crop recommendation</p>
+        </header>
+
+        <div class="form-container">
+            <!-- Main Input For Receiving Query to our ML -->
+            <form action="{{ url_for('predict') }}" method="post">
+                <div class="input-group">
+                    <label for="nitrogen">Nitrogen (N)</label>
+                    <input type="text" id="nitrogen" name="Nitrogen" placeholder="e.g., 90" required="required" />
+                </div>
+                <div class="input-group">
+                    <label for="phosphorus">Phosphorus (P)</label>
+                    <input type="text" id="phosphorus" name="Phosphorus" placeholder="e.g., 42" required="required" />
+                </div>
+                <div class="input-group">
+                     <label for="potassium">Potassium (K)</label>
+                    <input type="text" id="potassium" name="Potassium" placeholder="e.g., 43" required="required" />
+                </div>
+                <div class="input-group">
+                     <label for="temperature">Temperature (°C)</label>
+                    <input type="text" id="temperature" name="temperature" placeholder="e.g., 20.8" required="required" />
+                </div>
+                <div class="input-group">
+                     <label for="humidity">Humidity (%)</label>
+                    <input type="text" id="humidity" name="humidity" placeholder="e.g., 82" required="required" />
+                </div>
+                <div class="input-group">
+                     <label for="ph">Soil pH</label>
+                    <input type="text" id="ph" name="pH" placeholder="e.g., 6.5" required="required" />
+                </div>
+                <div class="input-group">
+                     <label for="rainfall">Rainfall (mm)</label>
+                    <input type="text" id="rainfall" name="rainfall" placeholder="e.g., 202" required="required" />
+                </div>
+
+                <button type="submit" class="btn">Predict Suitable Crop</button>
+            </form>
+        </div>
+
+        <div class="result-container">
+            <h2>Prediction Result:</h2>
+            <!-- Display prediction text -->
+            <h1 id="predict">{{ prediction_text }}</h1>
+        </div>
+
+        <footer>
+            <p>Powered by Kunal-Aher Agriculture Tech</p>
+        </footer>
+    </div> <!-- /container -->
+</body>
+</html>
