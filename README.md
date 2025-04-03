@@ -6,6 +6,7 @@ Here's a **detailed** README without code but with step-by-step instructions for
 
 ## 📌 **Overview**  
 This project predicts the most suitable crop for a given set of soil and environmental conditions using **Random Forest Classifier**. The model is deployed on **AWS**, providing scalable and real-time crop recommendations for farmers.  
+![image](https://github.com/user-attachments/assets/5b5b29de-2082-4627-9682-ca800b7f255d)
 
 ---
 
